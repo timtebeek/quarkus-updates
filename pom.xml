@@ -66,6 +66,8 @@
         <rewrite-maven-plugin.version>5.36.0</rewrite-maven-plugin.version>
         <!--   https://plugins.gradle.org/plugin/org.openrewrite.rewrite -->
         <rewrite-gradle-plugin.version>6.16.4</rewrite-gradle-plugin.version>
+        <!--   https://central.sonatype.com/artifact/org.openrewrite.recipe/rewrite-recommendations/versions -->
+        <rewrite-recommendations.version>1.8.0</rewrite-recommendations.version>
         <!-- align with https://central.sonatype.com/artifact/org.openrewrite/rewrite-core -->
         <micrometer-core.version>1.9.17</micrometer-core.version>
         <!-- tests-->
@@ -129,6 +131,18 @@
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>flatten-maven-plugin</artifactId>
                     <version>${flatten-maven-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.openrewrite.maven</groupId>
+                    <artifactId>rewrite-maven-plugin</artifactId>
+                    <version>${rewrite-maven-plugin.version}</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.openrewrite.recipe</groupId>
+                            <artifactId>rewrite-recommendations</artifactId>
+                            <version>${rewrite-recommendations.version}</version>
+                        </dependency>
+                    </dependencies>
                 </plugin>
             </plugins>
         </pluginManagement>
