@@ -61,31 +61,28 @@ recipeList:
       oldPropertyKey: quarkus\.hibernate-orm\.batch-fetch-size
       newPropertyKey: quarkus.hibernate-orm.fetch.batch-size
   - org.openrewrite.quarkus.ChangeQuarkusPropertyKey:
-      oldPropertyKey: quarkus\.hibernate-orm\.(.+)\.batch-fetch-size
+      oldPropertyKey: 'quarkus\.hibernate-orm\.("[^"]+"|[^."]+)\.batch-fetch-size'
       newPropertyKey: quarkus.hibernate-orm.$1.fetch.batch-size
   - org.openrewrite.quarkus.ChangeQuarkusPropertyKey:
       oldPropertyKey: quarkus\.hibernate-orm\.max-fetch-depth
       newPropertyKey: quarkus.hibernate-orm.fetch.max-depth
   - org.openrewrite.quarkus.ChangeQuarkusPropertyKey:
-      oldPropertyKey: quarkus\.hibernate-orm\.(.+)\.max-fetch-depth
+      oldPropertyKey: 'quarkus\.hibernate-orm\.("[^"]+"|[^."]+)\.max-fetch-depth'
       newPropertyKey: quarkus.hibernate-orm.$1.fetch.max-depth
   - org.openrewrite.quarkus.ChangeQuarkusPropertyKey:
       oldPropertyKey: quarkus\.hibernate-orm\.log\.bind-param
       newPropertyKey: quarkus.hibernate-orm.log.bind-parameters
   - org.openrewrite.quarkus.ChangeQuarkusPropertyKey:
-      oldPropertyKey: quarkus\.hibernate-orm\.(.+)\.log\.bind-param
-      newPropertyKey: quarkus.hibernate-orm.$1.log.bind-parameters
-  - org.openrewrite.quarkus.ChangeQuarkusPropertyKey:
       oldPropertyKey: quarkus\.hibernate-orm\.multitenant-schema-datasource
       newPropertyKey: quarkus.hibernate-orm.datasource
   - org.openrewrite.quarkus.ChangeQuarkusPropertyKey:
-      oldPropertyKey: quarkus\.hibernate-orm\.(.+)\.multitenant-schema-datasource
+      oldPropertyKey: 'quarkus\.hibernate-orm\.("[^"]+"|[^."]+)\.multitenant-schema-datasource'
       newPropertyKey: quarkus.hibernate-orm.$1.datasource
   - org.openrewrite.quarkus.ChangeQuarkusPropertyKey:
       oldPropertyKey: quarkus\.hibernate-orm\.dialect\.storage-engine
       newPropertyKey: quarkus.hibernate-orm.dialect.mysql.storage-engine
   - org.openrewrite.quarkus.ChangeQuarkusPropertyKey:
-      oldPropertyKey: quarkus\.hibernate-orm\.(.+)\.dialect\.storage-engine
+      oldPropertyKey: 'quarkus\.hibernate-orm\.("[^"]+"|[^."]+)\.dialect\.storage-engine'
       newPropertyKey: quarkus.hibernate-orm.$1.dialect.mysql.storage-engine
 
 #####
@@ -103,7 +100,7 @@ recipeList:
       oldPropertyKey: quarkus\.oidc\.authentication\.pkce-secret
       newPropertyKey: quarkus.oidc.authentication.state-secret
   - org.openrewrite.quarkus.ChangeQuarkusPropertyKey:
-      oldPropertyKey: quarkus\.oidc\.(.+)\.authentication\.pkce-secret
+      oldPropertyKey: 'quarkus\.oidc\.("[^"]+"|[^."]+)\.authentication\.pkce-secret'
       newPropertyKey: quarkus.oidc.$1.authentication.state-secret
 
 #####
@@ -121,7 +118,7 @@ recipeList:
       oldPropertyKey: quarkus\.rest-client\.multipart\.max-chunk-size
       newPropertyKey: quarkus.rest-client.max-chunk-size
   - org.openrewrite.quarkus.ChangeQuarkusPropertyKey:
-      oldPropertyKey: quarkus\.rest-client\.(.+)\.multipart\.max-chunk-size
+      oldPropertyKey: 'quarkus\.rest-client\.("[^"]+"|[^."]+)\.multipart\.max-chunk-size'
       newPropertyKey: quarkus.rest-client.$1.max-chunk-size
 
 #####
@@ -139,19 +136,19 @@ recipeList:
       oldPropertyKey: quarkus\.infinispan-client\.server-list
       newPropertyKey: quarkus.infinispan-client.hosts
   - org.openrewrite.quarkus.ChangeQuarkusPropertyKey:
-      oldPropertyKey: quarkus\.infinispan-client\.(.+)\.server-list
+      oldPropertyKey: 'quarkus\.infinispan-client\.("[^"]+"|[^."]+)\.server-list'
       newPropertyKey: quarkus.infinispan-client.$1.hosts
   - org.openrewrite.quarkus.ChangeQuarkusPropertyKey:
       oldPropertyKey: quarkus\.infinispan-client\.auth-username
       newPropertyKey: quarkus.infinispan-client.username
   - org.openrewrite.quarkus.ChangeQuarkusPropertyKey:
-      oldPropertyKey: quarkus\.infinispan-client\.(.+)\.auth-username
+      oldPropertyKey: 'quarkus\.infinispan-client\.("[^"]+"|[^."]+)\.auth-username'
       newPropertyKey: quarkus.infinispan-client.$1.username
   - org.openrewrite.quarkus.ChangeQuarkusPropertyKey:
       oldPropertyKey: quarkus\.infinispan-client\.auth-password
       newPropertyKey: quarkus.infinispan-client.password
   - org.openrewrite.quarkus.ChangeQuarkusPropertyKey:
-      oldPropertyKey: quarkus\.infinispan-client\.(.+)\.auth-password
+      oldPropertyKey: 'quarkus\.infinispan-client\.("[^"]+"|[^."]+)\.auth-password'
       newPropertyKey: quarkus.infinispan-client.$1.password
 
 #####
@@ -169,7 +166,7 @@ recipeList:
       oldPropertyKey: quarkus\.mailer\.ssl
       newPropertyKey: quarkus.mailer.tls
   - org.openrewrite.quarkus.ChangeQuarkusPropertyKey:
-      oldPropertyKey: quarkus\.mailer\.(.+)\.ssl
+      oldPropertyKey: 'quarkus\.mailer\.("[^"]+"|[^."]+)\.ssl'
       newPropertyKey: quarkus.mailer.$1.tls
 
 #####
@@ -205,7 +202,7 @@ recipeList:
       oldPropertyKey: quarkus\.cache\.redis\.ttl
       newPropertyKey: quarkus.cache.redis.expire-after-write
   - org.openrewrite.quarkus.ChangeQuarkusPropertyKey:
-      oldPropertyKey: quarkus\.cache\.redis\.(.+)\.ttl
+      oldPropertyKey: 'quarkus\.cache\.redis\.("[^"]+"|[^."]+)\.ttl'
       newPropertyKey: quarkus.cache.redis.$1.expire-after-write
 
 #####
@@ -271,10 +268,10 @@ description: >-
   and removed in Quarkus 4.0.
 recipeList:
   - org.openrewrite.quarkus.ChangeQuarkusPropertyKey:
-      oldPropertyKey: quarkus\.keycloak\.policy-enforcer\.paths\.(.+)\.path
+      oldPropertyKey: 'quarkus\.keycloak\.policy-enforcer\.paths\.("[^"]+"|[^."]+)\.path'
       newPropertyKey: quarkus.keycloak.policy-enforcer.paths.$1.paths
   - org.openrewrite.quarkus.ChangeQuarkusPropertyKey:
-      oldPropertyKey: quarkus\.keycloak\.(.+)\.policy-enforcer\.paths\.(.+)\.path
+      oldPropertyKey: 'quarkus\.keycloak\.("[^"]+"|[^."]+)\.policy-enforcer\.paths\.("[^"]+"|[^."]+)\.path'
       newPropertyKey: quarkus.keycloak.$1.policy-enforcer.paths.$2.paths
 
 #####

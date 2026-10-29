@@ -266,6 +266,66 @@ public class CoreUpdate40Test implements RewriteTest {
     }
 
     @Test
+    void testKeycloakClaimInformationPointPathNotRenamed() {
+        //language=properties
+        rewriteRun(properties(
+            """
+            quarkus.keycloak.policy-enforcer.paths.login.claim-information-point.claims.path={request.relativePath}
+            quarkus.keycloak."tenant1".policy-enforcer.paths.login.claim-information-point.claims.path={request.relativePath}
+            """,
+            spec -> spec.path("src/main/resources/application.properties")));
+    }
+
+    @Test
+    void testMailerSslToTls() {
+        //language=properties
+        rewriteRun(properties(
+            """
+            quarkus.mailer.ssl=true
+            quarkus.mailer."my.mailer".ssl=false
+            """,
+            """
+            quarkus.mailer.tls=true
+            quarkus.mailer."my.mailer".tls=false
+            """,
+            spec -> spec.path("src/main/resources/application.properties")));
+    }
+
+    @Test
+    void testNamedPersistenceUnitWithDotInName() {
+        //language=properties
+        rewriteRun(properties(
+            """
+            quarkus.hibernate-orm."my.pu".batch-fetch-size=8
+            quarkus.hibernate-orm."my.pu".dialect.storage-engine=InnoDB
+            """,
+            """
+            quarkus.hibernate-orm."my.pu".fetch.batch-size=8
+            quarkus.hibernate-orm."my.pu".dialect.mysql.storage-engine=InnoDB
+            """,
+            spec -> spec.path("src/main/resources/application.properties")));
+    }
+
+    @Test
+    void testProfilePrefixedKeys() {
+        //language=properties
+        rewriteRun(properties(
+            """
+            %dev.quarkus.hibernate-orm.batch-fetch-size=4
+            %dev.quarkus.hibernate-orm."inventory".max-fetch-depth=2
+            %dev,test.quarkus.mailer.ssl=false
+            %prod.quarkus.oidc."tenant1".authentication.pkce-secret=prod-secret
+            """,
+            """
+            %dev.quarkus.hibernate-orm.fetch.batch-size=4
+            %dev.quarkus.hibernate-orm."inventory".fetch.max-depth=2
+            %dev,test.quarkus.mailer.tls=false
+            %prod.quarkus.oidc."tenant1".authentication.state-secret=prod-secret
+            """,
+            spec -> spec.path("src/main/resources/application.properties")));
+    }
+
+    @Test
     void testConfigPropertyRenames() {
         @Language("properties")
         String originalProperties = """
@@ -278,7 +338,6 @@ public class CoreUpdate40Test implements RewriteTest {
             # Hibernate ORM - named persistence unit
             quarkus.hibernate-orm."inventory".batch-fetch-size=8
             quarkus.hibernate-orm."inventory".max-fetch-depth=2
-            quarkus.hibernate-orm."inventory".log.bind-param=false
             quarkus.hibernate-orm."inventory".multitenant-schema-datasource=inventory-ds
             quarkus.hibernate-orm."inventory".dialect.storage-engine=InnoDB
             # OIDC
@@ -330,7 +389,6 @@ public class CoreUpdate40Test implements RewriteTest {
             # Hibernate ORM - named persistence unit
             quarkus.hibernate-orm."inventory".fetch.batch-size=8
             quarkus.hibernate-orm."inventory".fetch.max-depth=2
-            quarkus.hibernate-orm."inventory".log.bind-parameters=false
             quarkus.hibernate-orm."inventory".datasource=inventory-ds
             quarkus.hibernate-orm."inventory".dialect.mysql.storage-engine=InnoDB
             # OIDC
