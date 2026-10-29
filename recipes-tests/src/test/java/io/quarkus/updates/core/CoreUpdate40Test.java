@@ -3,11 +3,13 @@ package io.quarkus.updates.core;
 import static org.openrewrite.java.Assertions.java;
 import static org.openrewrite.maven.Assertions.pomXml;
 import static org.openrewrite.properties.Assertions.properties;
+import static org.openrewrite.yaml.Assertions.yaml;
 
 import java.net.URI;
 import java.util.Properties;
 
 import org.intellij.lang.annotations.Language;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.openrewrite.Recipe;
 import org.openrewrite.config.Environment;
@@ -707,6 +709,72 @@ public class CoreUpdate40Test implements RewriteTest {
                         }
                     }
                 """));
+    }
+
+    @Test
+    void testYamlNestedKey() {
+        //language=yaml
+        rewriteRun(yaml(
+            """
+            quarkus:
+              hibernate-orm:
+                batch-fetch-size: 16
+                database:
+                  generation: drop-and-create
+            """,
+            """
+            quarkus:
+              hibernate-orm:
+                database:
+                  generation: drop-and-create
+                fetch:
+                  batch-size: 16
+            """,
+            spec -> spec.path("src/main/resources/application.yaml")));
+    }
+
+    @Test
+    @Disabled("https://github.com/openrewrite/rewrite-quarkus/pull/120")
+    void testYamlListValue() {
+        //language=yaml
+        rewriteRun(yaml(
+            """
+            quarkus:
+              micrometer:
+                binder:
+                  vertx:
+                    match-patterns:
+                      - /api/fruits/[0-9]+=/api/fruits/{id}
+                      - /api/legumes/[0-9]+=/api/legumes/{id}
+            """,
+            """
+            quarkus:
+              micrometer:
+                binder:
+                  http-server:
+                    match-patterns:
+                      - /api/fruits/[0-9]+=/api/fruits/{id}
+                      - /api/legumes/[0-9]+=/api/legumes/{id}
+            """,
+            spec -> spec.path("src/main/resources/application.yaml")));
+    }
+
+    @Test
+    @Disabled("https://github.com/openrewrite/rewrite-quarkus/pull/120")
+    void testYamlQuotedValue() {
+        //language=yaml
+        rewriteRun(yaml(
+            """
+            quarkus:
+              infinispan-client:
+                auth-password: "s3cr3t: #1"
+            """,
+            """
+            quarkus:
+              infinispan-client:
+                password: "s3cr3t: #1"
+            """,
+            spec -> spec.path("src/main/resources/application.yaml")));
     }
 
     @Test
