@@ -316,7 +316,6 @@ public class CoreUpdate40Test implements RewriteTest {
             quarkus.keycloak."tenant1".policy-enforcer.paths.login.path=/api/login
             # Misc
             quarkus.debug.dump-build-metrics=true
-            quarkus.package.jar.appcds.use-aot=true
             """;
 
         @Language("properties")
@@ -368,7 +367,6 @@ public class CoreUpdate40Test implements RewriteTest {
             quarkus.keycloak."tenant1".policy-enforcer.paths.login.paths=/api/login
             # Misc
             quarkus.builder.metrics.enabled=true
-            quarkus.package.jar.aot.enabled=true
             """;
 
         rewriteRun(properties(originalProperties, afterProperties, spec -> spec.path("src/main/resources/application.properties")));
@@ -781,5 +779,64 @@ public class CoreUpdate40Test implements RewriteTest {
                         }
                     }
                 """));
+    }
+
+    @Test
+    void testAppcdsWithUseAotToAotType() {
+        //language=properties
+        rewriteRun(properties(
+            """
+            quarkus.package.jar.appcds.enabled=true
+            quarkus.package.jar.appcds.use-aot=true
+            quarkus.package.jar.appcds.builder-image=registry.access.redhat.com/ubi9/openjdk-21:latest
+            quarkus.package.jar.appcds.use-container=false
+            """,
+            """
+            quarkus.package.jar.aot.enabled=true
+            quarkus.package.jar.aot.type=aot
+            """,
+            spec -> spec.path("src/main/resources/application.properties")));
+    }
+
+    @Test
+    void testAppcdsWithoutUseAotToAppCdsType() {
+        //language=properties
+        rewriteRun(properties(
+            """
+            quarkus.package.jar.appcds.enabled=true
+            """,
+            """
+            quarkus.package.jar.aot.type=app-cds
+            quarkus.package.jar.aot.enabled=true
+            """,
+            spec -> spec.path("src/main/resources/application.properties")));
+    }
+
+    @Test
+    void testAppcdsWithUseAotFalseToAppCdsType() {
+        //language=properties
+        rewriteRun(properties(
+            """
+            quarkus.package.jar.appcds.enabled=true
+            quarkus.package.jar.appcds.use-aot=false
+            """,
+            """
+            quarkus.package.jar.aot.enabled=true
+            quarkus.package.jar.aot.type=app-cds
+            """,
+            spec -> spec.path("src/main/resources/application.properties")));
+    }
+
+    @Test
+    void testAppcdsUseAotAloneDoesNotEnableAot() {
+        //language=properties
+        rewriteRun(properties(
+            """
+            quarkus.package.jar.appcds.use-aot=true
+            """,
+            """
+            quarkus.package.jar.aot.type=aot
+            """,
+            spec -> spec.path("src/main/resources/application.properties")));
     }
 }

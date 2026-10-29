@@ -291,9 +291,54 @@ recipeList:
   - org.openrewrite.quarkus.ChangeQuarkusPropertyKey:
       oldPropertyKey: quarkus\.debug\.dump-build-metrics
       newPropertyKey: quarkus.builder.metrics.enabled
+
+#####
+# AppCDS to AOT configuration
+#####
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: io.quarkus.updates.core.quarkus40.AppcdsToAotConfigProperties
+displayName: Migrate AppCDS configuration properties to AOT
+description: >-
+  Migrate the `quarkus.package.jar.appcds.*` configuration properties that were deprecated in Quarkus 3.x
+  and removed in Quarkus 4.0 to `quarkus.package.jar.aot.*`.
+  `appcds.use-aot` only selected the archive type, so it becomes `aot.type` rather than enabling AOT.
+recipeList:
+  - org.openrewrite.quarkus.ChangeQuarkusPropertyValue:
+      propertyKey: quarkus\.package\.jar\.appcds\.use-aot
+      oldValue: "true"
+      newValue: aot
+  - org.openrewrite.quarkus.ChangeQuarkusPropertyValue:
+      propertyKey: quarkus\.package\.jar\.appcds\.use-aot
+      oldValue: "false"
+      newValue: app-cds
   - org.openrewrite.quarkus.ChangeQuarkusPropertyKey:
       oldPropertyKey: quarkus\.package\.jar\.appcds\.use-aot
+      newPropertyKey: quarkus.package.jar.aot.type
+  - io.quarkus.updates.core.quarkus40.AppcdsToAotAppCdsType
+  - org.openrewrite.quarkus.ChangeQuarkusPropertyKey:
+      oldPropertyKey: quarkus\.package\.jar\.appcds\.enabled
       newPropertyKey: quarkus.package.jar.aot.enabled
+  - org.openrewrite.quarkus.DeleteQuarkusProperty:
+      propertyKey: quarkus\.package\.jar\.appcds\.builder-image
+  - org.openrewrite.quarkus.DeleteQuarkusProperty:
+      propertyKey: quarkus\.package\.jar\.appcds\.use-container
+# Every recipe in this file is also activated on its own, in file order: declaring this one after
+# AppcdsToAotConfigProperties makes that standalone run a no-op, as `appcds.enabled` is gone by then.
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: io.quarkus.updates.core.quarkus40.AppcdsToAotAppCdsType
+displayName: Keep generating an AppCDS archive
+description: >-
+  Without `appcds.use-aot`, Quarkus 3.x generated an AppCDS archive, while an unset `aot.type` now
+  picks the archive type from the JVM. Pin `aot.type` to `app-cds` unless it is already set.
+preconditions:
+  - org.openrewrite.quarkus.search.FindQuarkusProperties:
+      propertyKey: quarkus\.package\.jar\.appcds\.enabled
+recipeList:
+  - org.openrewrite.quarkus.AddQuarkusProperty:
+      property: quarkus.package.jar.aot.type
+      value: app-cds
 
 #####
 # ArC - @DefaultBean to @Reserve migration
